@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using OpenIddict.EntityFrameworkCore.Models;
 
 namespace Webchat.AuthorizationServer.Data
 {
@@ -15,6 +16,18 @@ namespace Webchat.AuthorizationServer.Data
             builder.Entity<ApplicationUser>()
                 .Property(p => p.ConcurrencyStamp)
                 .IsETagConcurrency();
+            builder.Entity<OpenIddictEntityFrameworkCoreApplication>()
+                .Property(p => p.ConcurrencyToken)
+                .IsETagConcurrency();
+            builder.Entity<OpenIddictEntityFrameworkCoreAuthorization>()
+                .Property(p => p.ConcurrencyToken)
+                .IsETagConcurrency();
+            builder.Entity<OpenIddictEntityFrameworkCoreScope>()
+                .Property(p => p.ConcurrencyToken)
+                .IsETagConcurrency();
+            builder.Entity<OpenIddictEntityFrameworkCoreToken>()
+                .Property(p => p.ConcurrencyToken)
+                .IsETagConcurrency();            
         }
     }
 }
