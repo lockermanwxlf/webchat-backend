@@ -79,7 +79,11 @@ builder.Services.AddOpenIddict()
 builder.Services.AddAuthentication(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
 builder.Services.AddAuthorization();
 
+builder.Services.AddCors();
+
 var app = builder.Build();
+
+app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
 // Forward HTTPS protocol as TLS connections are terminated before being routed to the container in serverless hosting.
 app.UseForwardedHeaders(new ForwardedHeadersOptions
