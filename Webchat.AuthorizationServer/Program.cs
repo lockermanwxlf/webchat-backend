@@ -31,6 +31,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Set up identity
 builder.Services.AddIdentityCore<ApplicationUser>()
+    .AddUserManager<UserManager<ApplicationUser>>()
+    .AddSignInManager<SignInManager<ApplicationUser>>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 // Add OpenIddict
@@ -100,6 +102,10 @@ app.UseAuthorization();
 
 app.MapGroup("account")
     .MapAccountEndpoints()
+    .DisableAntiforgery();
+
+app.MapGroup("auth")
+    .MapAuthorizationEndpoints()
     .DisableAntiforgery();
 
 app.Run();
