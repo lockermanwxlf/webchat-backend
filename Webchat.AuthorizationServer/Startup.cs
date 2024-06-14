@@ -5,7 +5,7 @@ namespace Webchat.AuthorizationServer
 {
     public static class Startup
     {
-        public static async Task CreateApplicationsAsync(AsyncServiceScope scope)
+        public static async Task CreateApplicationsAsync(AsyncServiceScope scope, string api1Secret, string api2Secret)
         {
             var manager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
             if (await manager.FindByClientIdAsync("webapp") is null)
@@ -20,31 +20,58 @@ namespace Webchat.AuthorizationServer
                         Permissions.GrantTypes.Password,
                         Permissions.GrantTypes.RefreshToken,
                         Permissions.Scopes.Profile,
-                        Permissions.Prefixes.Scope + "api1"
+                        Permissions.Prefixes.Scope + "api1",
+                        Permissions.Prefixes.Scope + "api2"
                     }
                 });
             }
-            if (await manager.FindByClientIdAsync("api1") is null)
+            if (await manager.FindByClientIdAsync("api_server") is null)
             {
                 await manager.CreateAsync(new OpenIddictApplicationDescriptor
                 {
-                    ClientId = "api1",
-                    ClientSecret = "secret1",
+                    ClientId = "api_server",
+                    ClientSecret = api1Secret,
                     Permissions =
                     {
                         Permissions.Endpoints.Introspection
                     }
                 });
             }
-            if (await manager.FindByClientIdAsync("api2") is null)
+            if (await manager.FindByClientIdAsync("negotiation_server") is null)
             {
                 await manager.CreateAsync(new OpenIddictApplicationDescriptor
                 {
-                    ClientId = "api2",
-                    ClientSecret = "secret2",
+                    ClientId = "negotiation_server",
+                    ClientSecret = api2Secret,
                     Permissions =
                     {
                         Permissions.Endpoints.Introspection
+                    }
+                });
+            }
+        }
+        public static async Task CreateScopesAsync(AsyncServiceScope scope) 
+        {
+            var manager = scope.ServiceProvider.GetRequiredService<IOpenIddictScopeManager>();
+            if (await manager.FindByNameAsync("api1") is null)
+            {
+                await manager.CreateAsync(new OpenIddictScopeDescriptor
+                {
+                    Name = "api1",
+                    Resources =
+                    {
+                        "api_server"
+                    }
+                });
+            }
+            if (await manager.FindByNameAsync("api2") is null)
+            {
+                await manager.CreateAsync(new OpenIddictScopeDescriptor
+                {
+                    Name = "api2",
+                    Resources =
+                    {
+                        "negotiation_server"
                     }
                 });
             }
