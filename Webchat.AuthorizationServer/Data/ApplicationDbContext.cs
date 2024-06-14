@@ -5,7 +5,7 @@ using OpenIddict.EntityFrameworkCore.Models;
 
 namespace Webchat.AuthorizationServer.Data
 {
-    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser, ApplicationRole, int>(options)
+    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser, ApplicationRole, string>(options)
     {
         protected override void OnModelCreating(ModelBuilder builder)
         {
