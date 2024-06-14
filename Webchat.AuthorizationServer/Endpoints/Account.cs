@@ -27,9 +27,7 @@ namespace Webchat.AuthorizationServer.Endpoints
             var user = new ApplicationUser
             {
                 UserName = model.Email,
-                Email = model.Email,
-                FirstName = model.FirstName,
-                LastName = model.LastName
+                Email = model.Email
             };
             var result = await userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
