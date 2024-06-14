@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Validation.AspNetCore;
 using Webchat.AuthorizationServer;
 using Webchat.AuthorizationServer.Data;
+using Webchat.AuthorizationServer.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -96,5 +97,9 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapGroup("account")
+    .MapAccountEndpoints()
+    .DisableAntiforgery();
 
 app.Run();
