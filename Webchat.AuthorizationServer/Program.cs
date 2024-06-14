@@ -96,7 +96,17 @@ using (var scope = app.Services.CreateAsyncScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     await context.Database.EnsureCreatedAsync();
-    await Startup.CreateApplicationsAsync(scope);
+
+    // Get client secrets from environment.
+    var secret1 = builder.Environment.IsProduction() ?
+        Environment.GetEnvironmentVariable("ApiServerClientSecret")! :
+        "client-secret1";
+    var secret2 = builder.Environment.IsProduction() ?
+        Environment.GetEnvironmentVariable("NegotiationServerClientSecret")! :
+        "client-secret2";
+
+    await Startup.CreateApplicationsAsync(scope, secret1, secret2);
+    await Startup.CreateScopesAsync(scope);
 }
 
 app.UseHttpsRedirection();
