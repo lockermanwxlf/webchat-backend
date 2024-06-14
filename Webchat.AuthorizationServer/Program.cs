@@ -27,7 +27,12 @@ builder.Services.AddIdentityCore<ApplicationUser>()
 
 var app = builder.Build();
 
-// Ensure database is created in Cosmos.
+// Forward HTTPS protocol as TLS connections are terminated before being routed to the container in serverless hosting.
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedProto
+});
+
 using (var scope = app.Services.CreateAsyncScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
