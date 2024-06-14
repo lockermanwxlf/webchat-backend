@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Webchat.AuthorizationServer.Data;
 
@@ -20,7 +21,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseCosmos(accountEndpoint: endpoint, accountKey: primaryKey, databaseName: "AuthorizationDB");
 });
 
+// Set up identity
+builder.Services.AddIdentityCore<ApplicationUser>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+
 var app = builder.Build();
+
+// Ensure database is created in Cosmos.
+using (var scope = app.Services.CreateAsyncScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await context.Database.EnsureCreatedAsync();
+}
 
 app.UseHttpsRedirection();
 
